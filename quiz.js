@@ -94,10 +94,10 @@ function showFinale() {
   document.getElementById("finaleHeading").textContent = FINALE_TITLE;
   document.getElementById("finalScore").textContent = score;
   let msg;
-  if (correctCount === TOTAL) msg = `Perfect score! ${correctCount} of ${TOTAL}! 👑`;
-  else if (correctCount >= TOTAL * 0.75) msg = `Amazing! ${correctCount} of ${TOTAL} correct ⭐`;
-  else if (correctCount >= TOTAL * 0.5) msg = `Nice job! ${correctCount} of ${TOTAL} correct 👏`;
-  else msg = `${correctCount} of ${TOTAL} correct — room to grow 💪`;
+  if (correctCount === TOTAL) msg = `Идеально! ${correctCount} из ${TOTAL}! 👑`;
+  else if (correctCount >= TOTAL * 0.75) msg = `Отлично! ${correctCount} из ${TOTAL} ⭐`;
+  else if (correctCount >= TOTAL * 0.5) msg = `Хорошая работа! ${correctCount} из ${TOTAL} 👏`;
+  else msg = `${correctCount} из ${TOTAL} — есть куда расти 💪`;
   document.getElementById("finalText").textContent = msg;
   document.getElementById("finale").classList.add("open");
   bigConfetti();
