@@ -1,17 +1,37 @@
 const POINTS = [10, 20, 30, 40, 50];
 let TOTAL = 0;
-Object.values(quizData).forEach((c) => (TOTAL += Object.keys(c.questions).length));
-let score = 0, answered = 0, correctCount = 0, activeKey = null, currentOptions = [];
+Object.values(quizData).forEach(
+  (c) => (TOTAL += Object.keys(c.questions).length),
+);
+let score = 0,
+  answered = 0,
+  correctCount = 0,
+  activeKey = null,
+  currentOptions = [];
 
-function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
-function div(cls){const d=document.createElement("div");d.className=cls;return d;}
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function div(cls) {
+  const d = document.createElement("div");
+  d.className = cls;
+  return d;
+}
 
 document.getElementById("quizTitle").textContent = QUIZ_TITLE;
 document.getElementById("answeredNum").textContent = `0/${TOTAL}`;
 
 const board = document.getElementById("board");
 board.appendChild(div("corner"));
-POINTS.forEach((p) => { const h = div("col-head"); h.textContent = p; board.appendChild(h); });
+POINTS.forEach((p) => {
+  const h = div("col-head");
+  h.textContent = p;
+  board.appendChild(h);
+});
 
 Object.keys(quizData).forEach((cat) => {
   const data = quizData[cat];
@@ -20,7 +40,10 @@ Object.keys(quizData).forEach((cat) => {
   label.innerHTML = `<span class="emo">${data.emoji}</span><span>${cat}</span>`;
   board.appendChild(label);
   POINTS.forEach((p) => {
-    if (!data.questions[p]) { board.appendChild(div("tile-spacer")); return; }
+    if (!data.questions[p]) {
+      board.appendChild(div("tile-spacer"));
+      return;
+    }
     const t = document.createElement("button");
     t.className = "tile";
     t.id = `tile-${cat}-${p}`;
@@ -35,10 +58,19 @@ function openQuestion(cat, p) {
   const tile = document.getElementById(`tile-${cat}-${p}`);
   if (tile.classList.contains("done")) return;
   activeKey = { cat, p };
-  const data = quizData[cat], qd = data.questions[p];
-  currentOptions = qd.options.map((text, i) => ({ text, correct: i === qd.answer }));
+  const data = quizData[cat],
+    qd = data.questions[p];
+  currentOptions = qd.options.map((text, i) => ({
+    text,
+    correct: i === qd.answer,
+  }));
   shuffle(currentOptions);
-  const optHTML = currentOptions.map((o, i) => `<button class="opt" onclick="choose(${i})"><span class="marker">${String.fromCharCode(65+i)}</span><span>${o.text}</span></button>`).join("");
+  const optHTML = currentOptions
+    .map(
+      (o, i) =>
+        `<button class="opt" onclick="choose(${i})"><span class="marker">${String.fromCharCode(65 + i)}</span><span>${o.text}</span></button>`,
+    )
+    .join("");
   const imgHTML = qd.image
     ? `<img class="m-img" src="${qd.image}" alt="" onerror="this.outerHTML='<div class=&quot;m-img-fallback&quot; style=&quot;background:${data.color}&quot;>${data.emoji}</div>'">`
     : `<div class="m-img-fallback" style="background:${data.color}">${data.emoji}</div>`;
@@ -59,12 +91,14 @@ function choose(i) {
   const qd = quizData[cat].questions[p];
   const opts = document.querySelectorAll(".opt");
   opts.forEach((o) => (o.disabled = true));
-  const correct = currentOptions.findIndex((o) => o.correct), fb = document.getElementById("feedback");
+  const correct = currentOptions.findIndex((o) => o.correct),
+    fb = document.getElementById("feedback");
   opts[correct].classList.add("correct");
   opts[correct].querySelector(".marker").textContent = "✓";
   answered++;
   if (i === correct) {
-    score += p; correctCount++;
+    score += p;
+    correctCount++;
     fb.textContent = `Правильно! +${p} 🎉 ${qd.comment || ""}`;
     fb.className = "feedback ok";
     confettiBurst();
@@ -95,15 +129,25 @@ function showFinale() {
   document.getElementById("finalScore").textContent = score;
   let msg;
   if (correctCount === TOTAL) msg = `Идеально! ${correctCount} из ${TOTAL}! 👑`;
-  else if (correctCount >= TOTAL * 0.75) msg = `Отлично! ${correctCount} из ${TOTAL} ⭐`;
-  else if (correctCount >= TOTAL * 0.5) msg = `Хорошая работа! ${correctCount} из ${TOTAL} 👏`;
+  else if (correctCount >= TOTAL * 0.75)
+    msg = `Отлично! ${correctCount} из ${TOTAL} ⭐`;
+  else if (correctCount >= TOTAL * 0.5)
+    msg = `Хорошая работа! ${correctCount} из ${TOTAL} 👏`;
   else msg = `${correctCount} из ${TOTAL} — есть куда расти 💪`;
   document.getElementById("finalText").textContent = msg;
   document.getElementById("finale").classList.add("open");
   bigConfetti();
 }
 
-const COLORS = ["#FFC845","#FF5C8A","#7C5CFC","#14B8A6","#F5A23D","#FF8FB1","#9B8CFF"];
+const COLORS = [
+  "#FFC845",
+  "#FF5C8A",
+  "#7C5CFC",
+  "#14B8A6",
+  "#F5A23D",
+  "#FF8FB1",
+  "#9B8CFF",
+];
 
 function makeBgConfetti() {
   const c = document.getElementById("bgConfetti");
@@ -120,12 +164,15 @@ function makeBgConfetti() {
 
 function confettiBurst() {
   const b = document.getElementById("burst");
-  const cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+  const cx = window.innerWidth / 2,
+    cy = window.innerHeight / 2;
   for (let k = 0; k < 28; k++) {
     const i = document.createElement("i");
-    i.style.left = cx + "px"; i.style.top = cy + "px";
+    i.style.left = cx + "px";
+    i.style.top = cy + "px";
     i.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
-    const ang = Math.random() * Math.PI * 2, dist = 110 + Math.random() * 170;
+    const ang = Math.random() * Math.PI * 2,
+      dist = 110 + Math.random() * 170;
     i.style.setProperty("--dx", Math.cos(ang) * dist + "px");
     i.style.setProperty("--dy", Math.sin(ang) * dist + "px");
     b.appendChild(i);
